@@ -25,5 +25,3 @@ The prisoner repeats steps 2 and 3 until they find their own number, or fail bec
 By starting with their own number, the prisoner guarantees they are on the unique permutation cycle of drawers containing their number. The only question is whether this cycle is longer than fifty drawers.  
 
 If each prisoner follows this strategy, the probability that all prisoners find their numbers increases to greather than 30%.
-
-

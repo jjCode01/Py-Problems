@@ -8,4 +8,4 @@ Solves soduko puzzles using recursion.
 
 ## [100 Prisoner Problem](./projects//prisoner_problem/)
 
-Tests probabilities for the loop strategy.
+Tests probabilities for different strategies to solve the 100 Prisoner Problem.
