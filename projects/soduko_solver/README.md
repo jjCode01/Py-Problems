@@ -1,3 +1,3 @@
-# Soduku Solver
+# Soduko Solver
 
-Solves soduku puzzles using recursion.
+Solves soduko puzzles using recursion.
