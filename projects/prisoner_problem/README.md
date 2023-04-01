@@ -1,5 +1,5 @@
 # 100 Prisoners Problem
-Reference the [Wikipedia](https://en.wikipedia.org/wiki/100_prisoners_problem#:~:text=The%20100%20prisoners%20problem%20is,cannot%20communicate%20with%20other%20prisoners.) page.  
+Reference the [Wikipedia](https://en.wikipedia.org/wiki/100_prisoners_problem) page.  
 This program was inspired by watching a [Youtube video](https://www.youtube.com/watch?v=iSNsgj1OCLA) from Veritasium about the 100 Prisoner Problem, and tests the probabilities of the Loop Strategy described below. 
 
 ## Problem

@@ -2,7 +2,6 @@ import matplotlib.pyplot as plt
 
 def n(num: int) -> list:
     _n = [num]
-    # print(num) 
     while num > 1:
         if num % 2:
             # num is odd
@@ -16,12 +15,13 @@ def n(num: int) -> list:
 if __name__ == "__main__":
     y = []
     p = plt
-    for x in range(3,40):
+    for x in range(4,41,2):
         z = n(x)
         if max(z) > 1:
             y.append(z)
             p.plot(z)
-            print(x)
 
-    p.ylabel('some numbers')
+    p.title("Collatz Conjecture", loc="center")
+    p.ylabel('Step Value')
+    p.xlabel('Step Count')
     p.show()

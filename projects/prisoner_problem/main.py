@@ -24,91 +24,83 @@ def init_boxes() -> list[int]:
     # on the outside of the box/drawer.
     return boxes
 
-def loop_strategy(*args) -> list[bool]:
+def loop_strategy(boxes: list, prisoners: int = 100, attempts: int = 50) -> int:
     """
     Loop strategy for the 100 Prisoners Problem.
     Should result in a success rate of greather than 30% for all
     prisoners to find their number.
     """
 
-    boxes = init_boxes()
-    prisoners_free = []
-    for player_number in list(range(100)):
-        box_number = player_number
-        for _ in range(50):
-            if boxes[box_number] == player_number:
+    # boxes = init_boxes()
+    prisoners_free = 0
+    for prisoner_number in list(range(prisoners)):
+        box_number = prisoner_number
+        for _ in range(attempts):
+            if boxes[box_number] == prisoner_number:
                 # Prisoner found their number within 50 attempts
-                prisoners_free.append(True)
+                prisoners_free += 1
                 break
             box_number = boxes[box_number]
-        else:
-            # Prisoner failed find their number
-            prisoners_free.append(False)
 
     return prisoners_free
 
-def random_strategy(*args) -> list[bool]:
+def random_strategy(boxes: list, prisoners: int = 100, attempts: int = 50) -> int:
     """
     Random strategy for the 100 Prisoners Problem.
     Should result in a less then 0% success rate for all prisoners
     to find their number.
     """
 
-    boxes = init_boxes()
-    prisoners_free = []
-    for player_number in list(range(100)):
+    # boxes = init_boxes()
+    prisoners_free = 0
+    for prisoner_number in list(range(prisoners)):
         unchecked_boxes = boxes[:]
 
-        for _ in range(50):
+        for _ in range(attempts):
             box_number = random.randint(0, len(unchecked_boxes) - 1)
-            prisoner_number = unchecked_boxes.pop(box_number)
+            number_in_box = unchecked_boxes.pop(box_number)
 
-            if player_number == prisoner_number:
+            if prisoner_number == number_in_box:
                 # Prisoner found their number within 50 attempts
-                prisoners_free.append(True)
+                prisoners_free += 1
                 break
-        else:
-            # Prisoner failed find their number
-            prisoners_free.append(False)
+
     return prisoners_free
 
 
 if __name__ == "__main__":
     # Run the strategy multiple times and print the average success rate.
-    ITERATIONS = 50_000
+    PRISONER_COUNT = 100
+    ITERATIONS = 10_000
     print('########## 100 Prisoner Problem ##########')
+    loop_results = []
+    random_results = []
 
-    print("Running Loop Strategy...")
-    with multiprocessing.Pool() as pool:
-        loop_results = pool.map(loop_strategy, range(ITERATIONS))
+    for _ in track(range(ITERATIONS)):
+        boxes = init_boxes()
+        loop_results.append(loop_strategy(boxes[:]))
+        random_results.append(random_strategy(boxes[:]))
 
-    print("Running Random Strategy...")
-    with multiprocessing.Pool() as pool:
-        random_results = pool.map(random_strategy, range(ITERATIONS))
+    loop_group_success_count = sum(results == PRISONER_COUNT for results in loop_results)
+    loop_free_prisoner_count = sum(results for results in loop_results)
 
-    print("Tabulating Loop Strategy Results...")
-    loop_group_success_count = sum(all(results) for results in loop_results)
-    loop_free_prisoner_count = sum(sum(results) for results in loop_results)
+    random_group_success_count = sum(results == PRISONER_COUNT for results in random_results)
+    random_free_prisoner_count = sum(results for results in random_results)
 
-    print("Tabulating Random Strategy Results...\n")
-    random_group_success_count = sum(all(results) for results in random_results)
-    random_free_prisoner_count = sum(sum(results) for results in random_results)
-    total_prisoners = ITERATIONS * 100
+    total_prisoners = ITERATIONS * PRISONER_COUNT
 
     console = Console()
     table = Table()
-    table.title = f"Results: 100 Prisoner Problem\n{ITERATIONS:,} Iterations"
+    table.title = f"\nResults: 100 Prisoner Problem\n{ITERATIONS:,} Iterations : {total_prisoners:,} Prisoners"
     table.add_column("Strategy")
     table.add_column("Group\nSuccess Count", justify="right")
     table.add_column("Group\nSuccess Rate", justify="right")
-    table.add_column("Total\nPrisoners", justify="right")
     table.add_column("Free\nPrisoners", justify="right")
     table.add_column("Individual\nSuccess Rate", justify="right")
     table.add_row(
         "Loop",
         f"{loop_group_success_count:,}",
         f"{(loop_group_success_count / ITERATIONS):.2%}",
-        f"{total_prisoners:,}",
         f"{loop_free_prisoner_count:,}",
         f"{(loop_free_prisoner_count / total_prisoners):.2%}"
     )
@@ -116,7 +108,6 @@ if __name__ == "__main__":
         "Random", 
         f"{random_group_success_count:,}", 
         f"{(random_group_success_count / ITERATIONS):.2%}", 
-        f"{total_prisoners:,}", 
         f"{random_free_prisoner_count:,}",
         f"{(random_free_prisoner_count / total_prisoners):.2%}"
     )
